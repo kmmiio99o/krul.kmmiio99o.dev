@@ -1,0 +1,115 @@
+{
+  "profile": {
+    "name": "Zuzia",
+    "nickname": "",
+    "birthday": "25.04",
+    "pronouns": "she/her",
+    "discordId": "1099039269391171765",
+    "avatarUrl": ""
+  },
+  "sections": {
+    "likes": {
+      "label": "Interests",
+      "items": [
+        "Anime",
+        "Manga",
+        "Cooking",
+        "Baking",
+        "Watching Male Figure Skating"
+      ]
+    },
+    "besties": { "label": "Besties", "items": ["N", "S", "M", "A"] },
+    "anime": {
+      "label": "Anime / Manga",
+      "items": [
+        "Kuroshitsuji",
+        "Tougen Anki",
+        "Haikyu!!",
+        "Mashle",
+        "Death Note",
+        "Jujutsu Kaisen"
+      ]
+    },
+    "food": {
+      "label": "Food",
+      "items": ["Schoko-bons", "Curry", "Raspberry Cloud Cake"]
+    },
+    "artists": {
+      "label": "Artists",
+      "items": ["Marino", "6arelyhuman", "Oskar Cyms"]
+    },
+    "athletes": {
+      "label": "Athletes",
+      "items": ["Yuzuru Hanyu", "Cha Jun-hwan"]
+    }
+  },
+  "customSections": [],
+  "about": {
+    "bio": "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
+    "funFact": ""
+  },
+  "customization": {
+    "colors": {
+      "primary": "#FFB4AB",
+      "secondary": "#E6C2BF",
+      "background": "#0D0D0D",
+      "surface": "#1A1A1A",
+      "textPrimary": "#FAFAFA",
+      "textSecondary": "#A0A0A0"
+    },
+    "display": {
+      "showAvatar": true,
+      "avatarSize": 140,
+      "showPronouns": true,
+      "showBirthday": true,
+      "showSections": {
+        "likes": true,
+        "besties": true,
+        "anime": true,
+        "food": true,
+        "artists": true,
+        "athletes": true
+      }
+    },
+    "layout": {
+      "pageStyle": "default",
+      "sectionColumns": "auto",
+      "sectionSpacing": 8,
+      "cardStyle": "none",
+      "cardBorderRadius": 16,
+      "cardBorder": false,
+      "cardShadow": true,
+      "cardBackground": "surface",
+      "contentMaxWidth": "lg"
+    },
+    "navbar": {
+      "showAvatar": true,
+      "showName": true,
+      "showAdmin": true,
+      "buttonPosition": "center",
+      "borderRadius": 16,
+      "blur": 16,
+      "shadow": true,
+      "padding": 3,
+      "bgOpacity": 0.85,
+      "mobileStyle": "dropdown"
+    },
+    "animations": {
+      "enabled": true,
+      "type": "slide",
+      "pageTransition": "slide",
+      "loadingAnimation": true,
+      "hoverEffects": true,
+      "loadingScreen": {
+        "style": "spinner",
+        "title": "Loading",
+        "subtitle": "{name}'s profile",
+        "showTitle": true,
+        "showSubtitle": true,
+        "speed": 1,
+        "color": "#FFB4AB",
+        "size": 80
+      }
+    }
+  }
+}
