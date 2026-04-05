@@ -214,6 +214,8 @@ export default function Navbar() {
             <MobileDropdown
               onClose={() => setMobileOpen(false)}
               primaryColor={primaryColor}
+              bgColor={data.customization.colors.background}
+              surfaceColor={data.customization.colors.surface}
               mobileStyle={navbar.mobileStyle}
             />
           )}

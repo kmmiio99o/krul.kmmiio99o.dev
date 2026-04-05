@@ -6,6 +6,8 @@ import { NAV_ITEMS, ADMIN_ITEM } from "../../constants/navigation";
 interface Props {
   onClose: () => void;
   primaryColor: string;
+  bgColor: string;
+  surfaceColor: string;
   mobileStyle?: string;
 }
 
@@ -54,7 +56,7 @@ function MenuItem({ item, primaryColor, onClose }: { item: typeof NAV_ITEMS[0]; 
   );
 }
 
-export default function MobileDropdown({ onClose, primaryColor, mobileStyle = "dropdown" }: Props) {
+export default function MobileDropdown({ onClose, primaryColor, bgColor, surfaceColor, mobileStyle = "dropdown" }: Props) {
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const allItems = [...NAV_ITEMS, ADMIN_ITEM];
@@ -74,7 +76,7 @@ export default function MobileDropdown({ onClose, primaryColor, mobileStyle = "d
           left: 0,
           right: 0,
           bottom: 0,
-          bgcolor: "#0D0D0D",
+          bgcolor: bgColor,
           zIndex: 9999,
           display: "flex",
           flexDirection: "column",
@@ -152,7 +154,7 @@ export default function MobileDropdown({ onClose, primaryColor, mobileStyle = "d
             bottom: 0,
             left: 0,
             right: 0,
-            bgcolor: "#1A1A1A",
+            bgcolor: surfaceColor,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             zIndex: 9999,
@@ -190,7 +192,7 @@ export default function MobileDropdown({ onClose, primaryColor, mobileStyle = "d
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.15, ease: "easeOut" }}
       sx={{
-        bgcolor: "#1A1A1A",
+        bgcolor: surfaceColor,
         backdropFilter: "blur(20px)",
         borderRadius: "16px",
         boxShadow: "0 8px 32px rgba(0,0,0,0.4)",

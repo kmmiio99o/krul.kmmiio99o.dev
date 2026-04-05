@@ -26,12 +26,15 @@ export async function saveToCloud(data: SiteData): Promise<boolean> {
 export async function loadFromCloud(): Promise<SiteData | null> {
   if (!SUPABASE_URL || !SUPABASE_KEY) return null;
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.main&select=data`, {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.main&select=data`,
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+        },
       },
-    });
+    );
     if (!res.ok) return null;
     const rows = await res.json();
     if (!rows || rows.length === 0) return null;

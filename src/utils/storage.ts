@@ -128,95 +128,103 @@ function migrateSections(data: any): SiteData {
   if (data.sections && typeof data.sections.likes === "object" && data.sections.likes.items) {
     return data as SiteData;
   }
-  const migrated = { ...data };
-  migrated.sections = { ...defaults.sections };
+  const merged = { ...data };
+  merged.sections = { ...defaults.sections };
   for (const key of Object.keys(defaults.sections) as (keyof typeof defaults.sections)[]) {
     const stored = data.sections?.[key];
     if (Array.isArray(stored)) {
-      migrated.sections[key] = { label: defaults.sections[key].label, items: stored };
+      merged.sections[key] = { label: defaults.sections[key].label, items: stored };
     } else {
-      migrated.sections[key] = defaults.sections[key];
+      merged.sections[key] = defaults.sections[key];
     }
   }
-  return migrated as SiteData;
+  return merged as SiteData;
 }
 
-function deepMergeDefaults<T>(stored: Partial<T>, defaults: T): T {
-  const result = { ...defaults } as any;
-  for (const key in stored) {
-    if (stored[key] !== null && typeof stored[key] === "object" && !Array.isArray(stored[key]) && defaults[key as keyof T] && typeof defaults[key as keyof T] === "object") {
-      result[key] = deepMergeDefaults(stored[key] as any, defaults[key as keyof T]);
-    } else {
-      result[key] = stored[key];
+function fillMissingDefaults(stored: any, defaults: any): any {
+  if (stored === null || stored === undefined) return defaults;
+  if (Array.isArray(defaults)) return Array.isArray(stored) ? stored : defaults;
+  if (typeof stored !== "object" || typeof defaults !== "object") return stored;
+
+  const result = { ...stored };
+
+  for (const key of Object.keys(defaults)) {
+    if (!(key in result)) {
+      result[key] = defaults[key];
+    } else if (result[key] !== null && typeof result[key] === "object" && typeof defaults[key] === "object" && !Array.isArray(defaults[key])) {
+      result[key] = fillMissingDefaults(result[key], defaults[key]);
     }
   }
-  return result as T;
+
+  return result;
 }
 
-let cloudCache: SiteData | null = null;
-let cloudFetchPromise: Promise<SiteData | null> | null = null;
+let cachedData: SiteData | null = null;
 
 export async function loadSiteDataAsync(): Promise<SiteData> {
-  if (cloudCache) return cloudCache;
+  if (cachedData) return cachedData;
 
-  if (!cloudFetchPromise) {
-    cloudFetchPromise = loadFromCloud().catch(() => null);
+  // 1. Try cloud first
+  try {
+    const cloudData = await loadFromCloud();
+    if (cloudData && typeof cloudData === "object" && Object.keys(cloudData).length > 0) {
+      const merged = fillMissingDefaults(cloudData, getDefaultData());
+      cachedData = migrateSections(merged);
+      localStorage.setItem(STORAGE_KEY, simpleEncrypt(JSON.stringify(cloudData)));
+      return cachedData;
+    }
+  } catch {
   }
 
-  const cloudData = await cloudFetchPromise;
-
-  if (cloudData) {
-    const merged = deepMergeDefaults(cloudData, getDefaultData());
-    cloudCache = migrateSections(merged);
-    localStorage.setItem(STORAGE_KEY, simpleEncrypt(JSON.stringify(cloudData)));
-    return cloudCache;
-  }
-
+  // 2. Fallback to localStorage
   try {
     const encrypted = localStorage.getItem(STORAGE_KEY);
     if (encrypted) {
       const decrypted = simpleDecrypt(encrypted);
       const parsed = JSON.parse(decrypted);
-      cloudCache = migrateSections(deepMergeDefaults(parsed, getDefaultData()));
-      return cloudCache;
+      if (parsed && typeof parsed === "object" && Object.keys(parsed).length > 0) {
+        cachedData = migrateSections(fillMissingDefaults(parsed, getDefaultData()));
+        return cachedData;
+      }
     }
   } catch {
   }
 
-  cloudCache = getDefaultData();
-  return cloudCache;
+  // 3. Nothing valid found, use defaults
+  cachedData = getDefaultData();
+  return cachedData;
 }
 
 export function loadSiteData(): SiteData {
-  if (cloudCache) return cloudCache;
-
   try {
     const encrypted = localStorage.getItem(STORAGE_KEY);
     if (!encrypted) return getDefaultData();
     const decrypted = simpleDecrypt(encrypted);
     const parsed = JSON.parse(decrypted);
-    return deepMergeDefaults(parsed, getDefaultData());
+    if (parsed && typeof parsed === "object" && Object.keys(parsed).length > 0) {
+      return fillMissingDefaults(parsed, getDefaultData());
+    }
+    return getDefaultData();
   } catch {
     return getDefaultData();
   }
 }
 
 export async function saveSiteDataAsync(data: SiteData): Promise<boolean> {
-  cloudCache = data;
+  cachedData = data;
   const encrypted = simpleEncrypt(JSON.stringify(data));
   localStorage.setItem(STORAGE_KEY, encrypted);
   return saveToCloud(data);
 }
 
 export function saveSiteData(data: SiteData): void {
-  cloudCache = data;
+  cachedData = data;
   const encrypted = simpleEncrypt(JSON.stringify(data));
   localStorage.setItem(STORAGE_KEY, encrypted);
   saveToCloud(data);
 }
 
 export function resetSiteData(): void {
-  cloudCache = null;
-  cloudFetchPromise = null;
+  cachedData = null;
   localStorage.removeItem(STORAGE_KEY);
 }
