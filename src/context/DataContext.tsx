@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from "react";
-import { loadSiteDataAsync, saveSiteData, resetSiteData, getDefaultData, saveSiteDataAsync, type SiteData } from "../utils/storage";
+import { loadSiteDataAsync, resetSiteData, getDefaultData, saveSiteDataAsync, type SiteData } from "../utils/storage";
 
 interface DataContextType {
   data: SiteData;
@@ -53,12 +53,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
       initialized.current = true;
     });
   }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      saveSiteData(data);
-    }
-  }, [data, loading]);
 
   const hasChanges = cloudSnapshot ? !deepEqual(data, cloudSnapshot) : false;
 
